@@ -51,11 +51,16 @@ fun TelaEditarCliente(
             Column(modifier = Modifier.padding(16.dp)) {
                 Text("Editar Cliente", style = MaterialTheme.typography.headlineSmall)
 
-                OutlinedTextField(value = nome.value, onValueChange = { nome.value = it }, label = { Text("Nome") })
-                OutlinedTextField(value = sobrenome.value, onValueChange = { sobrenome.value = it }, label = { Text("Sobrenome") })
-                OutlinedTextField(value = telefone.value, onValueChange = { telefone.value = it }, label = { Text("Telefone") })
-                OutlinedTextField(value = email.value, onValueChange = { email.value = it }, label = { Text("Email") })
-                OutlinedTextField(value = cpf.value, onValueChange = { cpf.value = it }, label = { Text("CPF") })
+                OutlinedTextField(value = nome.value, onValueChange = { nome.value = it },
+                    label = { Text("Nome") })
+                OutlinedTextField(value = sobrenome.value, onValueChange = { sobrenome.value = it },
+                    label = { Text("Sobrenome") })
+                OutlinedTextField(value = telefone.value, onValueChange = { telefone.value = it },
+                    label = { Text("Telefone") })
+                OutlinedTextField(value = email.value, onValueChange = { email.value = it },
+                    label = { Text("Email") })
+                OutlinedTextField(value = cpf.value, onValueChange = { cpf.value = it },
+                    label = { Text("CPF") })
 
                 Button(onClick = {
                     CoroutineScope(Dispatchers.IO).launch {

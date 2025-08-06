@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
@@ -55,10 +54,9 @@ fun TelaHome(navController: NavHostController) {
                     .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Adicionei um espaçamento aqui para não ficar grudado na TopAppBar
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Card para a seção de Clientes
+
                 ActionCard(
                     title = "Clientes",
                     icon = Icons.Default.Person,
@@ -68,7 +66,7 @@ fun TelaHome(navController: NavHostController) {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Card para a seção de Veículos
+
                 ActionCard(
                     title = "Veículos",
                     icon = Icons.Default.ShoppingCart, // Um ícone mais apropriado
@@ -112,7 +110,6 @@ fun ActionCard(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Botões de ação
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly

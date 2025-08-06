@@ -18,7 +18,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import com.example.lubcar1.ui.theme.AmareloPrincipal
 import com.example.lubcar1.ui.theme.PretoTexto
@@ -70,7 +69,7 @@ fun LoginScreen(
             onValueChange = { email = it },
             label = { Text("Email") },
             modifier = Modifier.fillMaxWidth(),
-            colors = OutlinedTextFieldDefaults.colors( // <-- A função agora se chama 'colors'
+            colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = AmareloPrincipal,
                 unfocusedBorderColor = AmareloPrincipal,
                 focusedLabelColor = AmareloPrincipal,
@@ -86,7 +85,7 @@ fun LoginScreen(
             label = { Text("Senha") },
             modifier = Modifier.fillMaxWidth(),
             visualTransformation = PasswordVisualTransformation(),
-            colors = OutlinedTextFieldDefaults.colors( // <-- A função agora se chama 'colors'
+            colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = AmareloPrincipal,
                 unfocusedBorderColor = AmareloPrincipal,
                 focusedLabelColor = AmareloPrincipal,
