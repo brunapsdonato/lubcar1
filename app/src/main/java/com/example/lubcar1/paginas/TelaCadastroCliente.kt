@@ -10,25 +10,27 @@ import androidx.compose.ui.platform.LocalContext
 
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.lubcar1.model.Cliente
-import com.example.lubcar1.model.ClienteDao
+import com.example.lubcar1.data.Cliente
+import com.example.lubcar1.uistates.EstadoUI
+import com.example.lubcar1.viewmodels.ClienteViewModel
 
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TelaCadastroCliente(navController: NavHostController) {
     val context = LocalContext.current
-    val repo = remember { ClienteDao() }
     val scope = rememberCoroutineScope()
+    val viewModel: ClienteViewModel = koinViewModel()
 
     var nome by remember { mutableStateOf("") }
     var sobrenome by remember { mutableStateOf("") }
     var telefone by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var cpf by remember { mutableStateOf("") }
-    var mensagem by remember { mutableStateOf("") }
 
+    val estado by viewModel.estado.collectAsState()
     Column(
         modifier = Modifier.padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -56,19 +58,11 @@ fun TelaCadastroCliente(navController: NavHostController) {
                         email = email,
                         cpf = cpf
                     )
-                    val sucesso = repo.adicionar(novoCliente)
-                    if (sucesso) {
-                        mensagem = "Cliente cadastrado com sucesso!"
-                        nome = ""
-                        sobrenome = ""
-                        telefone = ""
-                        email = ""
-                        cpf = ""
-                        navController.navigate("home")
-                    } else {
-                        mensagem = "Erro ao cadastrar cliente."
-                    }
-                }
+                    viewModel.adicionarCliente(novoCliente)
+                    Toast.makeText(context, "Cliente cadastrado com sucesso!", Toast.LENGTH_SHORT).show()
+                    nome = ""; sobrenome = ""; telefone = ""; email = ""; cpf = ""
+                    viewModel.resetarEstado()
+                    navController.navigate("home")                }
             },
             modifier = Modifier.padding(top = 16.dp)
         ) {
@@ -81,9 +75,19 @@ fun TelaCadastroCliente(navController: NavHostController) {
             Text("Voltar ao Menu")
         }
 
-        if (mensagem.isNotEmpty()) {
-            Toast.makeText(context, mensagem, Toast.LENGTH_SHORT).show()
-            mensagem = ""
+        when (estado) {
+            is EstadoUI.Sucesso -> {
+                Toast.makeText(context, "Cliente cadastrado com sucesso!", Toast.LENGTH_SHORT).show()
+                nome = ""; sobrenome = ""; telefone = ""; email = ""; cpf = ""
+                viewModel.resetarEstado()
+                navController.navigate("home")
+            }
+            is EstadoUI.Erro -> {
+                val msg = (estado as EstadoUI.Erro).mensagem
+                Toast.makeText(context, "Erro: $msg", Toast.LENGTH_SHORT).show()
+                viewModel.resetarEstado()
+            }
+            else -> {}
         }
     }
 }

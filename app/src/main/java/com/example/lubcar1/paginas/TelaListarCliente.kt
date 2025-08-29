@@ -9,21 +9,17 @@ import androidx.compose.material3.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.lubcar1.model.Cliente
-import com.example.lubcar1.model.ClienteDao
-import kotlinx.coroutines.launch
+import com.example.lubcar1.viewmodels.ClienteViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TelaListarCliente(navController: NavHostController) {
-    val dao = ClienteDao()
-    var listaClientes by remember { mutableStateOf(listOf<Cliente>()) }
-    var carregando by remember { mutableStateOf(true) }
-    val coroutineScope = rememberCoroutineScope()
+    val viewModel: ClienteViewModel = koinViewModel()
+    val listaClientes by viewModel.clientes.collectAsState()
+    val estado by viewModel.estado.collectAsState()
 
     LaunchedEffect(Unit) {
-        listaClientes = dao.listar()
-        carregando = false
     }
 
     Scaffold(
@@ -31,7 +27,7 @@ fun TelaListarCliente(navController: NavHostController) {
             TopAppBar(title = { Text("Lista de Clientes") })
         }
     ) { padding ->
-        if (carregando) {
+        if (estado == com.example.lubcar1.uistates.EstadoUI.Carregando) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -54,10 +50,7 @@ fun TelaListarCliente(navController: NavHostController) {
                         ClienteCard(
                             cliente = cliente,
                             onRemoverConfirmado = { clienteRemovido ->
-                                listaClientes = listaClientes - clienteRemovido
-                                coroutineScope.launch {
-                                    dao.remover(clienteRemovido)
-                                }
+                                viewModel.removerCliente(clienteRemovido)
                             },
                             navController = navController
                         )

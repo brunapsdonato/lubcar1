@@ -7,21 +7,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.lubcar1.model.Cliente
-import com.example.lubcar1.model.ClienteDao
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.example.lubcar1.data.Cliente
+import com.example.lubcar1.viewmodels.ClienteViewModel
+import org.koin.androidx.compose.koinViewModel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @Composable
 fun TelaEditarCliente(
-    clienteId: String,
+    clienteId: Long,
     navController: NavController
 ) {
-    val dao = ClienteDao()
-    var cliente by remember { mutableStateOf<Cliente?>(null) }
+    val viewModel: ClienteViewModel = koinViewModel()
+    val scope = rememberCoroutineScope()
+
     var carregando by remember { mutableStateOf(true) }
+    var cliente by remember { mutableStateOf<Cliente?>(null) }
 
     val nome = remember { mutableStateOf("") }
     val sobrenome = remember { mutableStateOf("") }
@@ -30,7 +30,7 @@ fun TelaEditarCliente(
     val cpf = remember { mutableStateOf("") }
 
     LaunchedEffect(clienteId) {
-        val c = dao.buscarPorId(clienteId)
+        val c = viewModel.buscarPorId(clienteId)
         cliente = c
         c?.let {
             nome.value = it.nome
@@ -47,41 +47,37 @@ fun TelaEditarCliente(
             CircularProgressIndicator()
         }
     } else {
-        cliente?.let {
+        cliente?.let { clienteOriginal ->
             Column(modifier = Modifier.padding(16.dp)) {
                 Text("Editar Cliente", style = MaterialTheme.typography.headlineSmall)
 
-                OutlinedTextField(value = nome.value, onValueChange = { nome.value = it },
-                    label = { Text("Nome") })
-                OutlinedTextField(value = sobrenome.value, onValueChange = { sobrenome.value = it },
-                    label = { Text("Sobrenome") })
-                OutlinedTextField(value = telefone.value, onValueChange = { telefone.value = it },
-                    label = { Text("Telefone") })
-                OutlinedTextField(value = email.value, onValueChange = { email.value = it },
-                    label = { Text("Email") })
-                OutlinedTextField(value = cpf.value, onValueChange = { cpf.value = it },
-                    label = { Text("CPF") })
+                OutlinedTextField(value = nome.value, onValueChange = { nome.value = it }, label = { Text("Nome") })
+                OutlinedTextField(value = sobrenome.value, onValueChange = { sobrenome.value = it }, label = { Text("Sobrenome") })
+                OutlinedTextField(value = telefone.value, onValueChange = { telefone.value = it }, label = { Text("Telefone") })
+                OutlinedTextField(value = email.value, onValueChange = { email.value = it }, label = { Text("Email") })
+                OutlinedTextField(value = cpf.value, onValueChange = { cpf.value = it }, label = { Text("CPF") })
 
-                Button(onClick = {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        val clienteEditado = it.copy(
-                            nome = nome.value,
-                            sobrenome = sobrenome.value,
-                            telefone = telefone.value,
-                            email = email.value,
-                            cpf = cpf.value
-                        )
-                        val sucesso = dao.editar(clienteEditado)
-                        if (sucesso) {
-                            withContext(Dispatchers.Main) {
-                                navController.popBackStack()
-                            }
+                Button(
+                    onClick = {
+                        scope.launch {
+                            val clienteEditado = clienteOriginal.copy(
+                                nome = nome.value,
+                                sobrenome = sobrenome.value,
+                                telefone = telefone.value,
+                                email = email.value,
+                                cpf = cpf.value
+                            )
+                            viewModel.editarCliente(clienteEditado)
+                            navController.popBackStack()
                         }
-                    }
-                }) {
+                    },
+                    modifier = Modifier.padding(top = 16.dp)
+                ) {
                     Text("Salvar")
                 }
             }
-        } ?: Text("Cliente não encontrado.")
+        } ?: Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text("Cliente não encontrado.")
+        }
     }
 }

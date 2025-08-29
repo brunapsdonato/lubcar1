@@ -25,7 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.Icon
 import androidx.navigation.NavController
-import com.example.lubcar1.model.Veiculo
+import com.example.lubcar1.data.Veiculo
 
 @Composable
 fun VeiculoCard(

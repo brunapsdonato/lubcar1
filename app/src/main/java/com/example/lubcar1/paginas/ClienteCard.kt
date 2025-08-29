@@ -1,5 +1,6 @@
 package com.example.lubcar1.paginas
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,7 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.Icon
 import androidx.navigation.NavController
-import com.example.lubcar1.model.Cliente
+import com.example.lubcar1.data.Cliente
 
 @Composable
 fun ClienteCard(
@@ -59,28 +60,38 @@ fun ClienteCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .clickable { navController.navigate("telaEditarCliente/${cliente.id}") },
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        shape = MaterialTheme.shapes.medium
     ) {
-        Row(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Column {
-                Text(text = cliente.nome, style = MaterialTheme.typography.titleMedium)
-                Text(text = "Sobrenome: ${cliente.sobrenome}",
-                    style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
-                Text(text = "Telefone: ${cliente.telefone}",
-                    style = MaterialTheme.typography.bodySmall)
-                Text(text = "Email: ${cliente.email}",
-                    style = MaterialTheme.typography.bodySmall)
-                Text(text = "CPF: ${cliente.cpf}",
-                    style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
-            }
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = "${cliente.nome} ${cliente.sobrenome}",
+                style = MaterialTheme.typography.titleMedium
+            )
+            Text(
+                text = "Telefone: ${cliente.telefone}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.Gray
+            )
+            Text(
+                text = "Email: ${cliente.email}",
+                style = MaterialTheme.typography.bodySmall
+            )
+            Text(
+                text = "CPF: ${cliente.cpf}",
+                style = MaterialTheme.typography.bodySmall,
+                color = Color.Gray
+            )
 
-            Row {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 12.dp),
+                horizontalArrangement = Arrangement.End
+            ) {
                 IconButton(
                     onClick = {
                         navController.navigate("telaEditarCliente/${cliente.id}")
@@ -88,7 +99,7 @@ fun ClienteCard(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Edit,
-                        contentDescription = "Editar Cliente",
+                        contentDescription = "Editar cliente ${cliente.nome}"
                     )
                 }
 
@@ -97,7 +108,7 @@ fun ClienteCard(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = "Deletar Cliente"
+                        contentDescription = "Remover cliente ${cliente.nome}"
                     )
                 }
             }
